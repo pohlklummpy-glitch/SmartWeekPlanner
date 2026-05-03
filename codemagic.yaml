@@ -21,10 +21,22 @@ workflows:
         script: |
           npx expo prebuild --platform ios --clean
       
+      - name: Fix Podfile for Expo
+        script: |
+          cd ios
+          # Add Expo pod sources at the top
+          echo "source 'https://cdn.cocoapods.org/'" > Podfile.tmp
+          echo "source 'https://github.com/expo/expo-podspecs.git'" >> Podfile.tmp
+          echo "" >> Podfile.tmp
+          cat Podfile >> Podfile.tmp
+          mv Podfile.tmp Podfile
+      
       - name: Install CocoaPods
         script: |
           cd ios
-          pod install --repo-update
+          rm -rf Pods Podfile.lock
+          pod repo update
+          pod install --repo-update --verbose
       
       - name: Build iOS app
         script: |
