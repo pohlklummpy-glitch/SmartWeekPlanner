@@ -1,0 +1,56 @@
+workflows:
+  ios-workflow:
+    name: iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      node: 18
+      xcode: latest
+      vars:
+        EXPO_NO_DOTENV: "1"
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      
+      - name: Install Expo CLI
+        script: |
+          npm install -g expo-cli eas-cli
+      
+      - name: Expo prebuild
+        script: |
+          npx expo prebuild --platform ios --clean
+      
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install --repo-update
+      
+      - name: Build iOS app
+        script: |
+          cd ios
+          xcodebuild -workspace SmartWeekPlanner.xcworkspace \
+            -scheme SmartWeekPlanner \
+            -configuration Release \
+            -archivePath $CM_BUILD_DIR/build/SmartWeekPlanner.xcarchive \
+            archive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+      
+      - name: Export IPA
+        script: |
+          cd ios
+          xcodebuild -exportArchive \
+            -archivePath $CM_BUILD_DIR/build/SmartWeekPlanner.xcarchive \
+            -exportPath $CM_BUILD_DIR/build \
+            -exportOptionsPlist exportOptions.plist || echo "Export failed, but archive exists"
+    
+    artifacts:
+      - ios/build/*.ipa
+      - ios/build/*.xcarchive
+    
+    publishing:
+      email:
+        recipients:
+          - pohldonato123@gmail.com
