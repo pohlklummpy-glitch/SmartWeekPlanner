@@ -23,3 +23,7 @@ ios/build/
 # Android
 android/app/build/
 android/.gradle/
+
+# Ignore native folders completely
+android/
+ios/
