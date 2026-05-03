@@ -1,7 +1,7 @@
 // ─── Email via Brevo (Sendinblue) API ─────────────────────────────────────────
 // 300 Emails/Tag kostenlos, keine eigene Domain nötig
 
-const BREVO_API_KEY = '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';
+const BREVO_API_KEY = process.env.BREVO_API_KEY || 'your-api-key-here';
 const FROM_EMAIL    = 'noreply.timeplanner@gmail.com';
 const FROM_NAME     = 'Smart Week Planner';
 const BREVO_API     = 'https://api.brevo.com/v3/smtp/email';
