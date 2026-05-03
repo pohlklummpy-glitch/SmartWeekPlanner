@@ -25,12 +25,22 @@ jobs:
       - name: Expo prebuild
         run: npx expo prebuild --platform ios
       
+      - name: Fix Podfile for Expo
+        run: |
+          cd ios
+          # Add Expo pod source at the top of Podfile
+          sed -i.bak '1i\
+          source '\''https://cdn.cocoapods.org/'\''\
+          source '\''https://github.com/expo/expo-podspecs.git'\''\
+          ' Podfile
+      
       - name: Install CocoaPods
         run: |
           cd ios
           rm -rf Pods Podfile.lock
+          pod setup
           pod repo update
-          pod install --repo-update
+          pod install --repo-update --verbose
       
       - name: Build iOS app
         run: |
