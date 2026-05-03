@@ -13,8 +13,11 @@
         "buildType": "apk"
       },
       "ios": {
-        "simulator": false,
+        "simulator": true,
         "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_NO_BUNDLE_COMPRESSION": "1"
       }
     },
     "production": {
